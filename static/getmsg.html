@@ -2,27 +2,43 @@
 <html>
 
 <head>
-    <!--Let browser know website is optimized for mobile-->
+    <title>sup3rS3cretMes5age</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="manifest" href="/static/icons/manifest.json">
+    <link rel="mask-icon" href="/static/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="theme-color" content="#ffffff">
+  <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/montserrat.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/application.css">
 </head>
 
 <body>
     <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="/static/jquery-2.1.1.min.js" integrity="sha384-fj9YEHKNa/e0CNquG4NcocjoyMATYo1k2Ff5wGB42C/9AwOlJjDoySPtNJalccfI"></script>
+    <script type="text/javascript" src="/static/jquery-3.5.1.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2"></script>
     <script type="text/javascript" src="/static/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3"></script>
     <link rel="stylesheet" href="/static/application.css">
     <main class="send">
         <div class="container">
             <h1>Secret Message</h1>
             <p class="subtitle">Get your secret one-time read only message</p>
-            <div class="input-field">
+                
+
+                <div class="slidecontainer">
+                    <h2>Drag the slider to display the Secret Message</h2>
+                    <input type="range" min="0" max="100" value="0" step="5" class="slider" id="myRange">
+                </div>
+            
+            <div class="input-field" style="display:none">
 
 
-                <textarea id="textarea1" name="msg" readonly=true class="materialize-textarea" placeholder="Message should appear here"></textarea>
+                <textarea  id="textarea1" name="msg" readonly=true class="materialize-textarea" placeholder="Message should appear here"></textarea>
 
             </div>
-            <div class="button">
-                <button class="btn clipboard" type="submit" data-clipboard-target="#textarea1" name="action">Copy to clipboard
+            <div class="button" style="display:none">
+                <button class="btn clipboard"  type="submit" data-clipboard-target="#textarea1" name="action">Copy to clipboard
               
             </button>
             </div>
@@ -31,7 +47,16 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function () {
+        var slider = document.getElementById("myRange");
+
+        slider.oninput = function() {
+            if (this.value == 100){
+             showSecret();
+            }
+        }
+
+        //$(document).ready(function () {
+        function showSecret() {
             new Clipboard('.btn');
 
             let params = (new URL(window.location)).searchParams;
@@ -50,15 +75,26 @@
                     showMsg("Message was already deleted :(")
                 },
             });
-        });
+        };
 
         function showMsg(msg, filetoken, filename) {
             $('#pbar').hide()
-            $('#textarea1').text(msg)
+
+            $('#textarea1').text(msg) 
             if (filetoken) {
                 console.log('filetoken=', filetoken)
                 getSecret(filetoken, filename)
             }
+           
+            // Hide slider
+            $('.slidecontainer').toggle();
+            // Show secret text box
+            $('.input-field').toggle();
+            // Show copy to clipboard button
+            $('.button').toggle();
+            // Reset slider (in case of back button)
+            slider.value = 0;
+
         }
 
         function getSecret(token, name) {
